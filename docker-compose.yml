@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  django-app:
+    build: .    
+    depends_on:                
+      mongo:                    
+        condition: service_healthy
+    container_name: "django_service" 
+    ports:
+      - "3000:8000"             
+    environment:
+      SECRET_KEY: change-me-in-production
+      DEBUG: "true"
+      MONGO_URL: mongodb://admin:supersecret@mongo:27017/tododb?authSource=admin  
+    
+  mongo:
+    image: mongo
+    ports:
+      - "3001:27017"
+    volumes:
+      - mongo-volume:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: tododb
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "admin", "--password", "supersecret", "--authenticationDatabase", "admin", "--eval", "db.runCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-volume:
