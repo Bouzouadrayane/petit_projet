@@ -13,7 +13,7 @@ services:
       MONGO_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/${MONGO_INIT}?authSource=admin
 
   mongo:
-    image: mongo
+    image: mongo:5.0
     ports:
       - "3001:27017"
     volumes:
@@ -23,7 +23,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INIT}
     healthcheck:
-      test: ["CMD", "mongosh", "--username", "${MONGO_USERNAME}", "--password", "${MONGO_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.runCommand('ping')"]
+      test: ["CMD-SHELL", "mongosh --username $$MONGO_USERNAME --password $$MONGO_PASSWORD --authenticationDatabase admin --eval \"db.runCommand('ping')\""] 
       interval: 10s
       timeout: 5s
       retries: 5
