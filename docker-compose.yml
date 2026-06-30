@@ -21,9 +21,9 @@ services:
     volumes:
       - mongo-volume:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: supersecret
-      MONGO_INITDB_DATABASE: tododb
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INIT}
     healthcheck:
       test: ["CMD", "mongosh", "--username", "admin", "--password", "supersecret", "--authenticationDatabase", "admin", "--eval", "db.runCommand('ping')"]
       interval: 10s
